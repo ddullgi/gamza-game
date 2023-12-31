@@ -1,4 +1,4 @@
-import { Bodies, Body, Engine, Render, Runner, World } from "matter-js";
+import { Bodies, Body, Engine, Events, Render, Runner, World } from "matter-js";
 import { FRUITS_BASE } from "./fruits";
 
 const engine = Engine.create();
@@ -93,5 +93,36 @@ window.onkeydown = (e) => {
       break;
   }
 };
+
+Events.on(engine, "collisionStart", (e) => {
+  e.pairs.forEach((collision) => {
+    if (collision.bodyA.index === collision.bodyB.index) {
+      const index = collision.bodyA.index;
+      // 수박이 충돌하면 그만
+      if (index === FRUITS_BASE.length - 1) {
+        return;
+      }
+
+      World.remove(world, [collision.bodyA, collision.bodyB]);
+
+      const newFruit = FRUITS_BASE[index + 1];
+
+      const newBody = Bodies.circle(
+        // 충돌한 지점의 좌표
+        collision.collision.supports[0].x,
+        collision.collision.supports[0].y,
+        newFruit.radius,
+        {
+          render: {
+            sprite: { texture: `${newFruit.name}.png` },
+          },
+          index: index + 1,
+        }
+      );
+
+      World.add(world, newBody);
+    }
+  });
+});
 
 addFruit();
