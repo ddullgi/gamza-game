@@ -55,7 +55,7 @@ function addFruit() {
       sprite: { texture: `${fruit.name}.png` },
     },
     // 탄성
-    restitution: 0.6,
+    restitution: 0.2,
   });
 
   currentBody = body;
@@ -65,6 +65,9 @@ function addFruit() {
 }
 
 window.onkeydown = (e) => {
+  if (disableAction) {
+    return;
+  }
   switch (e.code) {
     case "KeyA":
       Body.setPosition(currentBody, {
@@ -80,9 +83,11 @@ window.onkeydown = (e) => {
       break;
     case "KeyS":
       currentBody.isSleeping = false;
+      disableAction = true;
 
       setTimeout(() => {
         addFruit();
+        disableAction = false;
       }, 1000);
 
       break;
