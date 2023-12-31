@@ -31,6 +31,7 @@ const ground = Bodies.rectangle(310, 820, 620, 60, {
 });
 
 const topLine = Bodies.rectangle(310, 150, 620, 2, {
+  name: "topLine",
   isStatic: true,
   isSensor: true,
   render: { fillStyle: "#E6B143" },
@@ -70,16 +71,20 @@ window.onkeydown = (e) => {
   }
   switch (e.code) {
     case "KeyA":
-      Body.setPosition(currentBody, {
-        x: currentBody.position.x - 10,
-        y: currentBody.position.y,
-      });
+      if (currentBody.position.x - currentFruit.radius > 30) {
+        Body.setPosition(currentBody, {
+          x: currentBody.position.x - 10,
+          y: currentBody.position.y,
+        });
+      }
       break;
     case "KeyD":
-      Body.setPosition(currentBody, {
-        x: currentBody.position.x + 10,
-        y: currentBody.position.y,
-      });
+      if (currentBody.position.x + currentFruit.radius < 590) {
+        Body.setPosition(currentBody, {
+          x: currentBody.position.x + 10,
+          y: currentBody.position.y,
+        });
+      }
       break;
     case "KeyS":
       currentBody.isSleeping = false;
@@ -88,7 +93,7 @@ window.onkeydown = (e) => {
       setTimeout(() => {
         addFruit();
         disableAction = false;
-      }, 1000);
+      }, 500);
 
       break;
   }
@@ -121,6 +126,13 @@ Events.on(engine, "collisionStart", (e) => {
       );
 
       World.add(world, newBody);
+    }
+
+    if (
+      !disableAction &&
+      (collision.bodyA.name === "topLine" || collision.bodyB.name === "topLine")
+    ) {
+      alert("Game over");
     }
   });
 });
