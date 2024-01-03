@@ -17,11 +17,11 @@ const FRUITS_BASE = [
   },
   {
     name: "base/04_orange",
-    radius: 89 / 2,
+    radius: 90 / 2,
   },
   {
     name: "base/05_apple",
-    radius: 114 / 2,
+    radius: 117 / 2,
   },
   {
     name: "base/06_pear",
