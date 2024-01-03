@@ -47,6 +47,7 @@ let currentBody = null;
 let currentFruit = null;
 let disableAction = false;
 let positionX = 300;
+let interval = null;
 let score = 0;
 const scoreBoard = document.querySelector(".score");
 scoreBoard.textContent = `score: ${score}`;
@@ -76,22 +77,32 @@ window.onkeydown = (e) => {
   }
   switch (e.code) {
     case "KeyA":
-      if (currentBody.position.x - currentFruit.radius > 30) {
-        Body.setPosition(currentBody, {
-          x: currentBody.position.x - 10,
-          y: currentBody.position.y,
-        });
-        positionX -= 10;
+      if (interval) {
+        return;
       }
+      interval = setInterval(() => {
+        if (currentBody.position.x - currentFruit.radius > 30) {
+          Body.setPosition(currentBody, {
+            x: currentBody.position.x - 1,
+            y: currentBody.position.y,
+          });
+          positionX -= 1;
+        }
+      }, 5);
       break;
     case "KeyD":
-      if (currentBody.position.x + currentFruit.radius < 590) {
-        Body.setPosition(currentBody, {
-          x: currentBody.position.x + 10,
-          y: currentBody.position.y,
-        });
-        positionX += 10;
+      if (interval) {
+        return;
       }
+      interval = setInterval(() => {
+        if (currentBody.position.x + currentFruit.radius < 590) {
+          Body.setPosition(currentBody, {
+            x: currentBody.position.x + 1,
+            y: currentBody.position.y,
+          });
+          positionX += 1;
+        }
+      }, 5);
       break;
     case "KeyS":
       currentBody.isSleeping = false;
@@ -103,6 +114,15 @@ window.onkeydown = (e) => {
       }, 500);
 
       break;
+  }
+};
+
+window.onkeyup = (e) => {
+  switch (e.code) {
+    case "KeyA":
+    case "KeyD":
+      clearInterval(interval);
+      interval = null;
   }
 };
 
