@@ -1,5 +1,6 @@
 import { Bodies, Body, Engine, Events, Render, Runner, World } from "matter-js";
 import { FRUITS_BASE } from "./fruits";
+import "./style.css";
 
 const engine = Engine.create();
 const render = Render.create({
@@ -45,11 +46,15 @@ Runner.run(engine);
 let currentBody = null;
 let currentFruit = null;
 let disableAction = false;
+let positionX = 300;
+let score = 0;
+const scoreBoard = document.querySelector(".score");
+scoreBoard.textContent = `score: ${score}`;
 
 function addFruit() {
   const index = Math.floor(Math.random() * 5);
   const fruit = FRUITS_BASE[index];
-  const body = Bodies.circle(300, 50, fruit.radius, {
+  const body = Bodies.circle(positionX, 50, fruit.radius, {
     index: index,
     isSleeping: true,
     render: {
@@ -76,6 +81,7 @@ window.onkeydown = (e) => {
           x: currentBody.position.x - 10,
           y: currentBody.position.y,
         });
+        positionX -= 10;
       }
       break;
     case "KeyD":
@@ -84,6 +90,7 @@ window.onkeydown = (e) => {
           x: currentBody.position.x + 10,
           y: currentBody.position.y,
         });
+        positionX += 10;
       }
       break;
     case "KeyS":
@@ -109,7 +116,8 @@ Events.on(engine, "collisionStart", (e) => {
       }
 
       World.remove(world, [collision.bodyA, collision.bodyB]);
-
+      score += FRUITS_BASE[index].score;
+      scoreBoard.textContent = `score: ${score}`;
       const newFruit = FRUITS_BASE[index + 1];
 
       const newBody = Bodies.circle(
