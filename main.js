@@ -71,6 +71,52 @@ function addFruit() {
   World.add(world, body);
 }
 
+function mouseFunc(event) {
+  Body.setPosition(currentBody, {
+    x: event.clientX,
+    y: currentBody.position.y,
+  });
+  positionX = event.clientX;
+}
+
+window.onmousedown = () => {
+  window.addEventListener("mousemove", mouseFunc);
+};
+
+window.onmouseup = () => {
+  window.removeEventListener("mousemove", mouseFunc);
+  currentBody.isSleeping = false;
+  disableAction = true;
+
+  setTimeout(() => {
+    addFruit();
+    disableAction = false;
+  }, 500);
+};
+
+const touchHandler = (e) => {
+  Body.setPosition(currentBody, {
+    x: e.changedTouches[0].clientX,
+    y: currentBody.position.y,
+  });
+  positionX = e.changedTouches[0].clientX;
+};
+
+window.ontouchstart = () => {
+  window.addEventListener("touchmove", touchHandler);
+};
+
+window.ontouchend = () => {
+  window.removeEventListener("touchmove", touchHandler);
+  currentBody.isSleeping = false;
+  disableAction = true;
+
+  setTimeout(() => {
+    addFruit();
+    disableAction = false;
+  }, 500);
+};
+
 window.onkeydown = (e) => {
   if (disableAction) {
     return;
