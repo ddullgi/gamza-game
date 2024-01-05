@@ -67,18 +67,40 @@ const Game = {
   fruitsMerged: [],
 
   fruitSizes: [
-    { radius: 24, scoreValue: 1, img: "./assets/img/circle0.png" },
-    { radius: 32, scoreValue: 3, img: "./assets/img/circle1.png" },
-    { radius: 40, scoreValue: 6, img: "./assets/img/circle2.png" },
-    { radius: 56, scoreValue: 10, img: "./assets/img/circle3.png" },
-    { radius: 64, scoreValue: 15, img: "./assets/img/circle4.png" },
-    { radius: 72, scoreValue: 21, img: "./assets/img/circle5.png" },
-    { radius: 84, scoreValue: 28, img: "./assets/img/circle6.png" },
-    { radius: 96, scoreValue: 36, img: "./assets/img/circle7.png" },
-    { radius: 128, scoreValue: 45, img: "./assets/img/circle8.png" },
-    { radius: 160, scoreValue: 55, img: "./assets/img/circle9.png" },
-    { radius: 192, scoreValue: 66, img: "./assets/img/circle10.png" },
+    { radius: 24, scoreValue: 1, img: "./assets/img/circle0.png", scale: 160 },
+    { radius: 32, scoreValue: 3, img: "./assets/img/circle1.png", scale: 242 },
+    { radius: 40, scoreValue: 6, img: "./assets/img/circle2.png", scale: 99 },
+    { radius: 56, scoreValue: 10, img: "./assets/img/circle3.png", scale: 512 },
+    { radius: 64, scoreValue: 15, img: "./assets/img/circle4.png", scale: 245 },
+    { radius: 72, scoreValue: 21, img: "./assets/img/circle5.png", scale: 512 },
+    { radius: 84, scoreValue: 28, img: "./assets/img/circle6.png", scale: 512 },
+    { radius: 96, scoreValue: 36, img: "./assets/img/circle7.png", scale: 512 },
+    {
+      radius: 128,
+      scoreValue: 45,
+      img: "./assets/img/circle8.png",
+      scale: 512,
+    },
+    {
+      radius: 160,
+      scoreValue: 55,
+      img: "./assets/img/circle9.png",
+      scale: 512,
+    },
+    {
+      radius: 192,
+      scoreValue: 66,
+      img: "./assets/img/circle10.png",
+      size: 512,
+    },
   ],
+
+  currentFruitSize: 0,
+  nextFruitSize: 0,
+  setNextFruitSize: function () {
+    Game.nextFruitSize = Math.floor(Math.random() * 5);
+    Game.elements.nextFruitImg.src = `./assets/img/circle${Game.nextFruitSize}.png`;
+  },
 
   initGame: () => {
     Render.run(render);
@@ -135,6 +157,10 @@ const Game = {
 
       Game.elements.previewBall.position.x = e.mouse.position.x;
     });
+
+    Events.on(mouseConstraint, "mouseup", function (e) {
+      Game.addFruit(e.mouse.position.x);
+    });
   },
 
   // 과일 몸체 생성
@@ -146,14 +172,46 @@ const Game = {
       render: {
         sprite: {
           texture: size.img,
-          xScale: size.radius / 512,
-          yScale: size.radius / 512,
+          xScale: size.radius / size.scale,
+          yScale: size.radius / size.scale,
         },
       },
     });
     circle.sizeIndex = sizeIndex;
 
     return circle;
+  },
+
+  addFruit: (x) => {
+    if (Game.stateIndex !== GameStates.READY) return;
+
+    Game.sounds.click.play();
+
+    Game.stateIndex = GameStates.DROP;
+    const latestFruit = Game.generateFruitBody(x, 0, Game.currentFruitSize);
+    Composite.add(engine.world, latestFruit);
+
+    Game.currentFruitSize = Game.nextFruitSize;
+    Game.setNextFruitSize();
+    // Game.calculateScore();
+
+    Composite.remove(engine.world, Game.elements.previewBall);
+    Game.elements.previewBall = Game.generateFruitBody(
+      render.mouse.position.x,
+      0,
+      Game.currentFruitSize,
+      {
+        isStatic: true,
+        collisionFilter: { mask: 0x0040 },
+      }
+    );
+
+    setTimeout(() => {
+      if (Game.stateIndex === GameStates.DROP) {
+        Composite.add(engine.world, Game.elements.previewBall);
+        Game.stateIndex = GameStates.READY;
+      }
+    }, 500);
   },
 };
 
