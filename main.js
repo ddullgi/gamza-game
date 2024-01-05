@@ -2,8 +2,6 @@ import {
   Engine,
   Render,
   Runner,
-  Composites,
-  Common,
   MouseConstraint,
   Mouse,
   Composite,
@@ -76,14 +74,54 @@ const Game = {
   },
 
   fruitSizes: [
-    { radius: 24, scoreValue: 1, img: "./assets/img/circle0.png", scale: 160 },
-    { radius: 32, scoreValue: 3, img: "./assets/img/circle1.png", scale: 242 },
-    { radius: 40, scoreValue: 6, img: "./assets/img/circle2.png", scale: 99 },
-    { radius: 56, scoreValue: 10, img: "./assets/img/circle3.png", scale: 512 },
-    { radius: 64, scoreValue: 15, img: "./assets/img/circle4.png", scale: 245 },
-    { radius: 72, scoreValue: 21, img: "./assets/img/circle5.png", scale: 462 },
-    { radius: 84, scoreValue: 28, img: "./assets/img/circle6.png", scale: 512 },
-    { radius: 96, scoreValue: 36, img: "./assets/img/circle7.png", scale: 512 },
+    {
+      radius: 24,
+      scoreValue: 1,
+      img: "./assets/img/circle0.png",
+      scale: 160,
+    },
+    {
+      radius: 32,
+      scoreValue: 3,
+      img: "./assets/img/circle1.png",
+      scale: 242,
+    },
+    {
+      radius: 40,
+      scoreValue: 6,
+      img: "./assets/img/circle2.png",
+      scale: 99,
+    },
+    {
+      radius: 56,
+      scoreValue: 10,
+      img: "./assets/img/circle3.png",
+      scale: 512,
+    },
+    {
+      radius: 64,
+      scoreValue: 15,
+      img: "./assets/img/circle4.png",
+      scale: 245,
+    },
+    {
+      radius: 72,
+      scoreValue: 21,
+      img: "./assets/img/circle5.png",
+      scale: 462,
+    },
+    {
+      radius: 84,
+      scoreValue: 28,
+      img: "./assets/img/circle6.png",
+      scale: 512,
+    },
+    {
+      radius: 96,
+      scoreValue: 36,
+      img: "./assets/img/circle7.png",
+      scale: 512,
+    },
     {
       radius: 128,
       scoreValue: 45,
@@ -408,4 +446,31 @@ render.mouse = mouse;
 
 Game.initGame();
 
-const Matter = require("matter-js");
+// const resizeCanvas = () => {
+//   const screenWidth = document.body.clientWidth;
+//   const screenHeight = document.body.clientHeight;
+
+//   let newWidth = Game.width;
+//   let newHeight = Game.height;
+//   let scaleUI = 1;
+
+//   if (screenWidth * 1.5 > screenHeight) {
+//     newHeight = Math.min(Game.height, screenHeight);
+//     newWidth = newHeight / 1.5;
+//     scaleUI = newHeight / Game.height;
+//   } else {
+//     newWidth = Math.min(Game.width, screenWidth);
+//     newHeight = newWidth * 1.5;
+//     scaleUI = newWidth / Game.width;
+//   }
+
+//   render.canvas.style.width = `${newWidth}px`;
+//   render.canvas.style.height = `${newHeight}px`;
+
+//   Game.elements.ui.style.width = `${Game.width}px`;
+//   Game.elements.ui.style.height = `${Game.height}px`;
+//   Game.elements.ui.style.transform = `scale(${scaleUI})`;
+// };
+
+// document.body.onload = resizeCanvas;
+// document.body.onresize = resizeCanvas;
