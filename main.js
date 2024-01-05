@@ -123,6 +123,18 @@ const Game = {
       isStatic: true,
     });
     Composite.add(engine.world, Game.elements.previewBall);
+
+    setTimeout(() => {
+      Game.stateIndex = GameStates.READY;
+    }, 250);
+
+    // 과일 이동 이벤트
+    Events.on(mouseConstraint, "mousemove", (e) => {
+      if (Game.stateIndex !== GameStates.READY) return;
+      if (Game.elements.previewBall === null) return;
+
+      Game.elements.previewBall.position.x = e.mouse.position.x;
+    });
   },
 
   // 과일 몸체 생성
