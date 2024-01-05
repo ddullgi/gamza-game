@@ -108,9 +108,33 @@ const Game = {
 
   currentFruitSize: 0,
   nextFruitSize: 0,
-  setNextFruitSize: function () {
+  setNextFruitSize: () => {
     Game.nextFruitSize = Math.floor(Math.random() * 5);
     Game.elements.nextFruitImg.src = `./assets/img/circle${Game.nextFruitSize}.png`;
+  },
+
+  showHighscore: () => {
+    Game.elements.statusValue.innerText = Game.cache.highscore;
+  },
+  loadHighscore: () => {
+    const gameCache = localStorage.getItem("gamza-game-cache");
+    if (gameCache === null) {
+      Game.saveHighscore();
+      return;
+    }
+
+    Game.cache = JSON.parse(gameCache);
+    Game.showHighscore();
+  },
+  saveHighscore: () => {
+    Game.calculateScore();
+    if (Game.score < Game.cache.highscore) return;
+
+    Game.cache.highscore = Game.score;
+    Game.showHighscore();
+    Game.elements.endTitle.innerText = "New Highscore!";
+
+    localStorage.setItem("gamza-game-cache", JSON.stringify(Game.cache));
   },
 
   initGame: () => {
