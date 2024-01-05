@@ -16,6 +16,8 @@ import "./style.css";
 const wallPad = 64;
 const loseHeight = 84;
 const statusBarHeight = 48;
+
+// 물체 마찰값 설정
 const friction = {
   friction: 0.006,
   frictionStatic: 0.006,
@@ -43,7 +45,25 @@ const Game = {
     nextFruitImg: document.getElementById("game-next-fruit"),
     previewBall: null,
   },
+  cache: { highscore: 0 },
+  sounds: {
+    click: new Audio("./assets/click.mp3"),
+    pop0: new Audio("./assets/pop0.mp3"),
+    pop1: new Audio("./assets/pop1.mp3"),
+    pop2: new Audio("./assets/pop2.mp3"),
+    pop3: new Audio("./assets/pop3.mp3"),
+    pop4: new Audio("./assets/pop4.mp3"),
+    pop5: new Audio("./assets/pop5.mp3"),
+    pop6: new Audio("./assets/pop6.mp3"),
+    pop7: new Audio("./assets/pop7.mp3"),
+    pop8: new Audio("./assets/pop8.mp3"),
+    pop9: new Audio("./assets/pop9.mp3"),
+    pop10: new Audio("./assets/pop10.mp3"),
+  },
 
+  stateIndex: GameStates.MENU,
+
+  score: 0,
   fruitsMerged: [],
 
   fruitSizes: [
@@ -60,7 +80,7 @@ const Game = {
     { radius: 192, scoreValue: 66, img: "./assets/img/circle10.png" },
   ],
 
-  initGame: function () {
+  initGame: () => {
     Render.run(render);
     Runner.run(runner, engine);
 
@@ -88,6 +108,16 @@ const Game = {
 
     Events.on(mouseConstraint, "mousedown", menuMouseDown);
   },
+
+  startGame: () => {
+    Game.sounds.click.play();
+
+    // 메뉴 버튼 삭제
+    Composite.remove(engine.world, menuStatics);
+
+    // 벽 추가
+    Composite.add(engine.world, gameStatics);
+  },
 };
 
 const engine = Engine.create();
@@ -114,6 +144,41 @@ const menuStatics = [
     label: "btn-start",
     render: { sprite: { texture: "./assets/img/btn-start.png" } },
   }),
+];
+
+const wallProps = {
+  isStatic: true,
+  render: { fillStyle: "#FFEEDB" },
+  ...friction,
+};
+
+const gameStatics = [
+  // Left
+  Bodies.rectangle(
+    -(wallPad / 2),
+    Game.height / 2,
+    wallPad,
+    Game.height,
+    wallProps
+  ),
+
+  // Right
+  Bodies.rectangle(
+    Game.width + wallPad / 2,
+    Game.height / 2,
+    wallPad,
+    Game.height,
+    wallProps
+  ),
+
+  // Bottom
+  Bodies.rectangle(
+    Game.width / 2,
+    Game.height + wallPad / 2 - statusBarHeight,
+    Game.width,
+    wallPad,
+    wallProps
+  ),
 ];
 
 // ? 마우스 컨트롤 추가
