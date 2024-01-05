@@ -446,31 +446,31 @@ render.mouse = mouse;
 
 Game.initGame();
 
-// const resizeCanvas = () => {
-//   const screenWidth = document.body.clientWidth;
-//   const screenHeight = document.body.clientHeight;
+const resizeCanvas = () => {
+  const screenWidth = document.body.clientWidth;
+  const screenHeight = document.body.clientHeight;
 
-//   let newWidth = Game.width;
-//   let newHeight = Game.height;
-//   let scaleUI = 1;
+  let newWidth = Game.width;
+  let newHeight = Game.height;
+  let scaleUI = 1;
 
-//   if (screenWidth * 1.5 > screenHeight) {
-//     newHeight = Math.min(Game.height, screenHeight);
-//     newWidth = newHeight / 1.5;
-//     scaleUI = newHeight / Game.height;
-//   } else {
-//     newWidth = Math.min(Game.width, screenWidth);
-//     newHeight = newWidth * 1.5;
-//     scaleUI = newWidth / Game.width;
-//   }
+  if (screenWidth * 1.5 > screenHeight) {
+    newHeight = Math.min(Game.height, screenHeight);
+    newWidth = newHeight / 1.5;
+    scaleUI = newHeight / Game.height;
+  } else {
+    newWidth = Math.min(Game.width, screenWidth);
+    newHeight = newWidth * 1.5;
+    scaleUI = newWidth / Game.width;
+  }
 
-//   render.canvas.style.width = `${newWidth}px`;
-//   render.canvas.style.height = `${newHeight}px`;
+  render.canvas.style.width = `${newWidth}px`;
+  render.canvas.style.height = `${newHeight}px`;
 
-//   Game.elements.ui.style.width = `${Game.width}px`;
-//   Game.elements.ui.style.height = `${Game.height}px`;
-//   Game.elements.ui.style.transform = `scale(${scaleUI})`;
-// };
+  Game.elements.ui.style.width = `${Game.width}px`;
+  Game.elements.ui.style.height = `${Game.height}px`;
+  Game.elements.ui.style.transform = `scale(${scaleUI})`;
+};
 
-// document.body.onload = resizeCanvas;
-// document.body.onresize = resizeCanvas;
+document.body.onload = resizeCanvas;
+document.body.onresize = resizeCanvas;
