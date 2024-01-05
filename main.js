@@ -117,6 +117,31 @@ const Game = {
 
     // 벽 추가
     Composite.add(engine.world, gameStatics);
+
+    // 멈춰있는 첫번째 과일 생성
+    Game.elements.previewBall = Game.generateFruitBody(Game.width / 2, 0, 0, {
+      isStatic: true,
+    });
+    Composite.add(engine.world, Game.elements.previewBall);
+  },
+
+  // 과일 몸체 생성
+  generateFruitBody: function (x, y, sizeIndex, extraConfig = {}) {
+    const size = Game.fruitSizes[sizeIndex];
+    const circle = Bodies.circle(x, y, size.radius, {
+      ...friction,
+      ...extraConfig,
+      render: {
+        sprite: {
+          texture: size.img,
+          xScale: size.radius / 512,
+          yScale: size.radius / 512,
+        },
+      },
+    });
+    circle.sizeIndex = sizeIndex;
+
+    return circle;
   },
 };
 
