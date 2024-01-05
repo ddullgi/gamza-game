@@ -72,7 +72,7 @@ const Game = {
     { radius: 40, scoreValue: 6, img: "./assets/img/circle2.png", scale: 99 },
     { radius: 56, scoreValue: 10, img: "./assets/img/circle3.png", scale: 512 },
     { radius: 64, scoreValue: 15, img: "./assets/img/circle4.png", scale: 245 },
-    { radius: 72, scoreValue: 21, img: "./assets/img/circle5.png", scale: 512 },
+    { radius: 72, scoreValue: 21, img: "./assets/img/circle5.png", scale: 462 },
     { radius: 84, scoreValue: 28, img: "./assets/img/circle6.png", scale: 512 },
     { radius: 96, scoreValue: 36, img: "./assets/img/circle7.png", scale: 512 },
     {
@@ -160,6 +160,57 @@ const Game = {
 
     Events.on(mouseConstraint, "mouseup", function (e) {
       Game.addFruit(e.mouse.position.x);
+    });
+
+    Events.on(engine, "collisionStart", (e) => {
+      e.pairs.forEach((collision) => {
+        const bodyA = collision.bodyA;
+        const bodyB = collision.bodyB;
+
+        // 벽이랑 충돌할 경우
+        if (bodyA.isStatic || bodyB.isStatic) return;
+
+        const aY = bodyA.position.y + bodyA.circleRadius;
+        const bY = bodyB.position.y + bodyB.circleRadius;
+
+        // 패배 조건
+        if (aY < loseHeight || bY < loseHeight) {
+          Game.loseGame();
+          return;
+        }
+
+        // 크기가 다를경우 건너 뜀
+        if (bodyA.sizeIndex !== bodyB.sizeIndex) return;
+
+        let newSize = bodyA.sizeIndex + 1;
+
+        // 수박 두개 합쳐지는 경우
+        if (
+          bodyA.circleRadius >=
+          Game.fruitSizes[Game.fruitSizes.length - 1].radius
+        ) {
+          Game.fruitsMerged[bodyA.sizeIndex] += 1;
+          Game.sounds[`pop${bodyA.sizeIndex}`].play();
+          Composite.remove(engine.world, [bodyA, bodyB]);
+          Game.addPop(midPosX, midPosY, bodyA.circleRadius);
+          return;
+        }
+
+        Game.fruitsMerged[bodyA.sizeIndex] += 1;
+
+        // Therefore, circles are same size, so merge them.
+        const midPosX = (bodyA.position.x + bodyB.position.x) / 2;
+        const midPosY = (bodyA.position.y + bodyB.position.y) / 2;
+
+        Game.sounds[`pop${bodyA.sizeIndex}`].play();
+        Composite.remove(engine.world, [bodyA, bodyB]);
+        Composite.add(
+          engine.world,
+          Game.generateFruitBody(midPosX, midPosY, newSize)
+        );
+        Game.addPop(midPosX, midPosY, bodyA.circleRadius);
+        // Game.calculateScore();
+      });
     });
   },
 
