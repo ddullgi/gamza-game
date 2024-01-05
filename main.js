@@ -114,31 +114,31 @@ const Game = {
       radius: 84,
       scoreValue: 28,
       img: "./assets/img/circle6.png",
-      scale: 512,
+      scale: 196,
     },
     {
       radius: 96,
       scoreValue: 36,
       img: "./assets/img/circle7.png",
-      scale: 512,
+      scale: 129,
     },
     {
       radius: 128,
       scoreValue: 45,
       img: "./assets/img/circle8.png",
-      scale: 512,
+      scale: 183,
     },
     {
       radius: 160,
       scoreValue: 55,
       img: "./assets/img/circle9.png",
-      scale: 512,
+      scale: 474,
     },
     {
       radius: 192,
       scoreValue: 66,
       img: "./assets/img/circle10.png",
-      size: 512,
+      scale: 182,
     },
   ],
 
@@ -179,7 +179,7 @@ const Game = {
 
     Composite.add(engine.world, menuStatics);
 
-    // Game.loadHighscore();
+    Game.loadHighscore();
     Game.elements.ui.style.display = "none";
     Game.fruitsMerged = Array.apply(null, Array(Game.fruitSizes.length)).map(
       () => 0
@@ -260,18 +260,6 @@ const Game = {
 
         let newSize = bodyA.sizeIndex + 1;
 
-        // 수박 두개 합쳐지는 경우
-        if (
-          bodyA.circleRadius >=
-          Game.fruitSizes[Game.fruitSizes.length - 1].radius
-        ) {
-          Game.fruitsMerged[bodyA.sizeIndex] += 1;
-          Game.sounds[`pop${bodyA.sizeIndex}`].play();
-          Composite.remove(engine.world, [bodyA, bodyB]);
-          Game.addPop(midPosX, midPosY, bodyA.circleRadius);
-          return;
-        }
-
         Game.fruitsMerged[bodyA.sizeIndex] += 1;
 
         // Therefore, circles are same size, so merge them.
@@ -280,12 +268,19 @@ const Game = {
 
         Game.sounds[`pop${bodyA.sizeIndex}`].play();
         Composite.remove(engine.world, [bodyA, bodyB]);
+        Game.addPop(midPosX, midPosY, bodyA.circleRadius);
+        Game.calculateScore();
+        // 수박 두개 합쳐지는 경우
+        if (
+          bodyA.circleRadius >=
+          Game.fruitSizes[Game.fruitSizes.length - 1].radius
+        ) {
+          return;
+        }
         Composite.add(
           engine.world,
           Game.generateFruitBody(midPosX, midPosY, newSize)
         );
-        Game.addPop(midPosX, midPosY, bodyA.circleRadius);
-        Game.calculateScore();
       });
     });
   },
@@ -384,10 +379,10 @@ const render = Render.create({
 });
 
 const menuStatics = [
-  // Bodies.rectangle(Game.width / 2, Game.height * 0.4, 512, 512, {
-  //   isStatic: true,
-  //   render: { sprite: { texture: "./assets/img/bg-menu.png" } },
-  // }),
+  Bodies.rectangle(Game.width / 2, Game.height * 0.4, 512, 512, {
+    isStatic: true,
+    render: { sprite: { texture: "./assets/img/bg-menu.png" } },
+  }),
 
   Bodies.rectangle(Game.width / 2, Game.height * 0.75, 512, 96, {
     isStatic: true,
