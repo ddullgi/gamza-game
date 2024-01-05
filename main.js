@@ -66,6 +66,17 @@ const Game = {
   score: 0,
   fruitsMerged: [],
 
+  // 점수 계산 함수
+  calculateScore: () => {
+    const score = Game.fruitsMerged.reduce((total, count, sizeIndex) => {
+      const value = Game.fruitSizes[sizeIndex].scoreValue * count;
+      return total + value;
+    }, 0);
+
+    Game.score = score;
+    Game.elements.score.innerText = Game.score;
+  },
+
   fruitSizes: [
     { radius: 24, scoreValue: 1, img: "./assets/img/circle0.png", scale: 160 },
     { radius: 32, scoreValue: 3, img: "./assets/img/circle1.png", scale: 242 },
@@ -209,7 +220,7 @@ const Game = {
           Game.generateFruitBody(midPosX, midPosY, newSize)
         );
         Game.addPop(midPosX, midPosY, bodyA.circleRadius);
-        // Game.calculateScore();
+        Game.calculateScore();
       });
     });
   },
@@ -244,7 +255,7 @@ const Game = {
 
     Game.currentFruitSize = Game.nextFruitSize;
     Game.setNextFruitSize();
-    // Game.calculateScore();
+    Game.calculateScore();
 
     Composite.remove(engine.world, Game.elements.previewBall);
     Game.elements.previewBall = Game.generateFruitBody(
