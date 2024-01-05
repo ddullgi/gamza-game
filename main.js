@@ -10,8 +10,6 @@ import {
   Bodies,
   Events,
 } from "matter-js";
-import { FRUITS_BASE } from "./fruits";
-import "./style.css";
 
 const wallPad = 64;
 const loseHeight = 84;
@@ -175,6 +173,11 @@ const Game = {
     // 벽 추가
     Composite.add(engine.world, gameStatics);
 
+    Game.calculateScore();
+    Game.elements.endTitle.innerText = "Game Over!";
+    Game.elements.ui.style.display = "block";
+    Game.elements.end.style.display = "none";
+
     // 멈춰있는 첫번째 과일 생성
     Game.elements.previewBall = Game.generateFruitBody(Game.width / 2, 0, 0, {
       isStatic: true,
@@ -304,7 +307,7 @@ const Game = {
     const circle = Bodies.circle(x, y, r, {
       isStatic: true,
       collisionFilter: { mask: 0x0040 },
-      angle: rand() * (Math.PI * 2),
+      angle: Math.random() * (Math.PI * 2),
       render: {
         sprite: {
           texture: "./assets/img/pop.png",
@@ -319,6 +322,14 @@ const Game = {
       Composite.remove(engine.world, circle);
     }, 100);
   },
+
+  // 패배 함수
+  loseGame: () => {
+    Game.stateIndex = GameStates.LOSE;
+    Game.elements.end.style.display = "flex";
+    runner.enabled = false;
+    Game.saveHighscore();
+  },
 };
 
 const engine = Engine.create();
@@ -330,7 +341,7 @@ const render = Render.create({
     width: Game.width,
     height: Game.height,
     wireframes: false,
-    background: "#ffdcae",
+    background: "#def0f7",
   },
 });
 
@@ -349,7 +360,7 @@ const menuStatics = [
 
 const wallProps = {
   isStatic: true,
-  render: { fillStyle: "#FFEEDB" },
+  render: { fillStyle: "#b8c3c7" },
   ...friction,
 };
 
@@ -396,3 +407,5 @@ const mouseConstraint = MouseConstraint.create(engine, {
 render.mouse = mouse;
 
 Game.initGame();
+
+const Matter = require("matter-js");
