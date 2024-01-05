@@ -66,11 +66,27 @@ const Game = {
 
     Composite.add(engine.world, menuStatics);
 
-    Game.loadHighscore();
+    // Game.loadHighscore();
     Game.elements.ui.style.display = "none";
     Game.fruitsMerged = Array.apply(null, Array(Game.fruitSizes.length)).map(
       () => 0
     );
+
+    const menuMouseDown = () => {
+      // 게임 시작 버튼이외에 클릭하면 리턴
+      if (
+        mouseConstraint.body === null ||
+        mouseConstraint.body?.label !== "btn-start"
+      ) {
+        return;
+      }
+
+      // 게임 시작 버튼 클릭하면 스타트 게임 실행 및 이벤트 해제
+      Events.off(mouseConstraint, "mousedown", menuMouseDown);
+      Game.startGame();
+    };
+
+    Events.on(mouseConstraint, "mousedown", menuMouseDown);
   },
 };
 
@@ -99,5 +115,18 @@ const menuStatics = [
     render: { sprite: { texture: "./assets/img/btn-start.png" } },
   }),
 ];
+
+// ? 마우스 컨트롤 추가
+const mouse = Mouse.create(render.canvas);
+const mouseConstraint = MouseConstraint.create(engine, {
+  mouse: mouse,
+  constraint: {
+    stiffness: 0.2,
+    render: {
+      visible: false,
+    },
+  },
+});
+render.mouse = mouse;
 
 Game.initGame();
